@@ -19,6 +19,7 @@ jobs:
     - name: Setup Java JDK
       uses: actions/setup-java@v3.10.0
       with:
-        java-version: 17
+        distribution: 'adopt-openj9'
+        java-version: '17'
     - name: Run Unit Tests
       run: ./mvnw test
