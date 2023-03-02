@@ -63,10 +63,10 @@ public class DatastoreImpl implements Datastore {
         return history;
     }
 
-    @Override public List<HttpResponseData> getHistoryByURL(String url) {
+    @Override public List<HttpResponseData> getHistoryByURL(String url) throws IOException {
 
         List<HttpResponseData> result = new ArrayList<>();
-
+        AtomicBoolean fail = new AtomicBoolean(false);
         history.forEach(h -> {
             if(h.getUrl().equals(url)) {
 
@@ -75,12 +75,13 @@ public class DatastoreImpl implements Datastore {
                     result.add(h);
                 } catch (IOException e) {
                     logger.error("Error while loading content file: {}", h.getContentFile());
-                    throw new RuntimeException(e);
+                    fail.set(true);
                 }
 
             }
         });
 
+        if(fail.get()) throw new IOException("Error while loading content file(s)");
         return result;
     }
 
@@ -126,17 +127,13 @@ public class DatastoreImpl implements Datastore {
             logger.info("Index file not found: {}", indexJson.getAbsolutePath());
             logger.info("Creating index file: {}", indexJson.getAbsolutePath());
 
-            try {
-                if(!indexJson.createNewFile()) throw new IOException("Error while creating index file: " + indexJson.getAbsolutePath());
+            if(!indexJson.createNewFile()) throw new IOException("Error while creating index file: " + indexJson.getAbsolutePath());
 
-                FileWriter writer = new FileWriter(indexJson);
-                writer.write("[]");
-                writer.flush();
-                writer.close();
+            FileWriter writer = new FileWriter(indexJson);
+            writer.write("[]");
+            writer.flush();
+            writer.close();
 
-            } catch (IOException e) {
-                throw new RuntimeException("Error while creating index file: " + indexJson.getAbsolutePath());
-            }
         } else {
             logger.info("Index file found: {}", indexJson.getAbsolutePath());
 
@@ -155,7 +152,7 @@ public class DatastoreImpl implements Datastore {
     }
     private void loadDatastore(File file) throws IOException {
 
-        if(!file.exists()) throw new RuntimeException("File not found: " + file.getAbsolutePath());
+        if(!file.exists()) throw new IOException("File not found: " + file.getAbsolutePath());
 
         BufferedReader reader = new BufferedReader(new FileReader(file));
 
@@ -175,11 +172,11 @@ public class DatastoreImpl implements Datastore {
 
         File mainDirectory = new File(".mbio_data");
 
-        if(!mainDirectory.exists()) throw new RuntimeException("Main directory not found: " + mainDirectory.getAbsolutePath());
+        if(!mainDirectory.exists()) throw new IOException("Main directory not found: " + mainDirectory.getAbsolutePath());
 
         File indexJson = new File(mainDirectory.getAbsolutePath() + File.separator + "index.json");
 
-        if(!indexJson.exists()) throw new RuntimeException("Index file not found: " + indexJson.getAbsolutePath());
+        if(!indexJson.exists()) throw new IOException("Index file not found: " + indexJson.getAbsolutePath());
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(history);
@@ -194,7 +191,7 @@ public class DatastoreImpl implements Datastore {
 
         File file = new File(DATASTORE_CONTENT + File.separator + filePath);
 
-        if(!file.exists()) throw new RuntimeException("File not found: " + filePath);
+        if(!file.exists()) throw new IOException("File not found: " + filePath);
 
         BufferedReader reader = new BufferedReader(new FileReader(file));
 

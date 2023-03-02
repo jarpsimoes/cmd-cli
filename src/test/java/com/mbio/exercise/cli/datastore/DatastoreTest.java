@@ -115,7 +115,7 @@ public class DatastoreTest {
     }
     @Test
     @Order(3)
-    public void testGetHistoryByUrl() {
+    public void testGetHistoryByUrl() throws IOException {
         List<HttpResponseData> listOfResults = datastore.getHistoryByURL("https://www.adadada.com");
 
         assert listOfResults.size() == 2;
