@@ -2,6 +2,7 @@ package com.mbio.exercise.cli.operations;
 
 import com.mbio.exercise.cli.datastore.Datastore;
 import com.mbio.exercise.cli.datastore.obj.HttpResponseData;
+import com.mbio.exercise.cli.utils.CLIException;
 import com.mbio.exercise.cli.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,20 +41,22 @@ public class Fetch implements Runnable {
 
         if(file != null && file.length > 0) {
             logger.info("Fetching {} files", file.length);
-            for (String f : file) {
+
+            Arrays.stream(file).toList().forEach(f -> {
                 try {
                     urls.addAll(Utils.getUrlsFromFile(f));
                 } catch (Exception e) {
                     logger.error("Error while reading file: {}", f);
-                    throw new RuntimeException(e);
+                    throw new CLIException(e);
                 }
-            }
+            });
+
         }
         try {
             loadUrls(urls);
         } catch (IOException e) {
             logger.error("Error while fetching urls");
-            throw new RuntimeException(e);
+            throw new CLIException(e);
         }
 
     }
