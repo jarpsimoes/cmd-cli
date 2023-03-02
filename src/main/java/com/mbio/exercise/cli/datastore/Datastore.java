@@ -9,7 +9,7 @@ import java.util.List;
 public interface Datastore {
 
     HttpResponseData addNew(HttpResponseData data) throws IOException;
-    List<HttpResponseData> getAllHistory();
+    List<HttpResponseData> getAllHistory() throws IOException;
     List<HttpResponseData> getHistoryByURL(String url);
 
     void backup(String filePath, DatastoreImpl.BackupType backupType) throws IOException;
