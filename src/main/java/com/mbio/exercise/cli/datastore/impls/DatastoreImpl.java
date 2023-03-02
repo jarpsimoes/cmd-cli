@@ -230,9 +230,9 @@ public class DatastoreImpl implements Datastore {
             case CSV -> {
                 data.forEach(row -> {
                     try {
-                        writer.write(String.format("'%s';'%s';'%s';'%s';'%s';'%s'", row.getUrl(),
-                                row.getResultCode(), row.getResponseTime(), row.getContentFile(), row.getContentType(),
-                                row.getContent()));
+                        writer.write(String.format("'%s';'%s';'%s';'%s';'%s'", row.getUrl(),
+                                row.getResultCode(), row.getResponseTime(),
+                                row.getContentType(), row.getContent()));
                         writer.newLine();
                     } catch (IOException e) {
                         logger.error("Error while writing CSV file: {}", e.getMessage());
@@ -246,13 +246,14 @@ public class DatastoreImpl implements Datastore {
                     try {
                         writer.write(String.format("URL: %s", row.getUrl()));
                         writer.newLine();
-                        writer.write(String.format("Result Code: %s", row.getResultCode()));
+                        writer.write(String.format("Result code: %s", row.getResultCode()));
                         writer.newLine();
-                        writer.write(String.format("Content Type: %s", row.getContentType()));
+                        writer.write(String.format("Response time: %s", row.getResponseTime()));
+                        writer.newLine();
+                        writer.write(String.format("Content type: %s", row.getContentType()));
                         writer.newLine();
                         writer.write(String.format("Content: %s", row.getContent()));
                         writer.newLine();
-
                         writer.write("--------------------------------------------------");
                         writer.newLine();
                     } catch (IOException e) {

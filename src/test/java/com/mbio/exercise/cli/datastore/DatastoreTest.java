@@ -53,8 +53,6 @@ public class DatastoreTest {
             fileBackupTXT.delete();
         }
     }
-
-
     @Test
     @Order(1)
     public void testAddNew() throws IOException {
@@ -65,7 +63,7 @@ public class DatastoreTest {
 
         testData.setUrl("https://www.google.com");
         testData.setResultCode(200);
-        testData.setContent("OK");
+        testData.setContent("OK" + System.lineSeparator() + "other line" + System.lineSeparator() + "other line");
         testData.setResponseTime(100);
         testData.setContentType("text/html");
 
@@ -153,8 +151,6 @@ public class DatastoreTest {
 
         datastore.backup("./backup.csv", DatastoreImpl.BackupType.CSV);
 
-
-
         List<HttpResponseData> allRows = Utils.parseCSV("./backup.csv");
 
         assert allRows.size() == 3;
@@ -162,13 +158,14 @@ public class DatastoreTest {
         assert allRows.get(1).getUrl().equals("https://www.adadada.com");
         assert allRows.get(2).getUrl().equals("https://www.adadada.com");
 
-
-
         datastore.backup("./backup.txt", DatastoreImpl.BackupType.TXT);
 
-        File fileTXT = new File("./backup.txt");
+        List<HttpResponseData> parsedRows = Utils.parseTXT("./backup.txt");
 
-        assert fileTXT.exists();
+        assert parsedRows.size() == 3;
+        assert parsedRows.get(0).getUrl().equals("https://www.google.com");
+        assert parsedRows.get(1).getUrl().equals("https://www.adadada.com");
+        assert parsedRows.get(2).getUrl().equals("https://www.adadada.com");
 
     }
 }

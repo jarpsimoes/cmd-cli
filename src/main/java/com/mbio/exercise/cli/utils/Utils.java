@@ -111,11 +111,68 @@ public class Utils {
             httpResponseData.setUrl(row[0]);
             httpResponseData.setResultCode(Integer.parseInt(row[1]));
             httpResponseData.setResponseTime(Long.parseLong(row[2]));
-            httpResponseData.setContentType(row[4]);
-            httpResponseData.setContent(row[5]);
+            httpResponseData.setContentType(row[3]);
+            httpResponseData.setContent(row[4]);
             allData.add(httpResponseData);
         });
 
         return allData;
+    }
+    public static List<HttpResponseData> parseTXT(final String fileName) throws IOException {
+        File file = new File(fileName);
+
+        if(!file.exists() || !file.isFile()) {
+            throw new FileNotFoundException(String.format("File not found or not a file [%s]", fileName));
+        }
+
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+        String line;
+        StringBuilder content = new StringBuilder();
+
+        List<HttpResponseData> result = new ArrayList<>();
+
+        boolean loadingEntity = false;
+        HttpResponseData entity = null;
+        boolean startLongText = false;
+
+        while ((line = bufferedReader.readLine()) != null) {
+
+            if(!loadingEntity) {
+                entity = new HttpResponseData();
+                loadingEntity = true;
+            }
+
+            if(line.startsWith("URL:")){
+                entity.setUrl(line.substring(4).trim());
+            } else
+            if(line.startsWith("Result code:")){
+                entity.setResultCode(Integer.parseInt(line.substring(12).trim()));
+            } else
+            if(line.startsWith("Response time:")){
+                entity.setResponseTime(Long.parseLong(line.substring(14).trim()));
+            } else
+            if(line.startsWith("Content type:")){
+                entity.setContentType(line.substring(13).trim());
+            } else
+            if(line.startsWith("Content:")){
+                entity.setContent(line.substring(8).trim());
+                startLongText = true;
+            } else {
+                if(startLongText && line.equals("--------------------------------------------------")) {
+                    startLongText = false;
+                    loadingEntity = false;
+
+                    result.add(entity);
+
+                }
+                if(startLongText) {
+                    entity.setContent(entity.getContent() + line);
+                }
+            }
+
+
+        }
+
+        return result;
     }
 }
