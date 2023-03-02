@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.IntStream;
 
 @CommandLine.Command(name = "fetch", description = "Fetches Urls", mixinStandardHelpOptions = true)
 public class Fetch implements Runnable {
@@ -64,15 +65,16 @@ public class Fetch implements Runnable {
     private void loadUrls(List<String> urls) throws IOException {
 
         AtomicBoolean error = new AtomicBoolean(false);
-        urls.forEach(u -> {
 
+        IntStream.range(0, urls.size()).forEach(i -> {
+            String u = urls.get(i);
             URL url = null;
             try {
                 url = new URL(u);
                 HttpResponseData data = Utils.getContent(url);
 
                 if(output != null && !output.isEmpty()) {
-                    writeOutput(data.getContent(), output);
+                    writeOutput(data.getContent(), String.format("%s_%s", i, output));
                 }
                 datastore.addNew(data);
 
@@ -88,7 +90,9 @@ public class Fetch implements Runnable {
         }
     }
     private void writeOutput(String content, String filePath) throws IOException {
-        File file = new File(output);
+        File file = new File(filePath);
+
+        logger.info("Testing file: {}", filePath);
 
         if(file.exists()) {
             logger.error("File already exists: {}", filePath);

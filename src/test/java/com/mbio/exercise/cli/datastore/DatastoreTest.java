@@ -7,10 +7,6 @@ import com.mbio.exercise.cli.utils.FileTestUtils;
 import com.mbio.exercise.cli.utils.Utils;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.CsvParser;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.CsvParserSettings;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.UnescapedQuoteHandling;
-
 import java.io.*;
 import java.util.List;
 

@@ -6,9 +6,7 @@ import com.mbio.exercise.cli.utils.FileTestUtils;
 import io.quarkus.test.junit.main.LaunchResult;
 import io.quarkus.test.junit.main.QuarkusMainLauncher;
 import io.quarkus.test.junit.main.QuarkusMainTest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
@@ -16,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 @QuarkusMainTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FetchTest {
 
     ObjectMapper mapper = new ObjectMapper();
@@ -47,8 +46,8 @@ public class FetchTest {
             FileTestUtils.deleteDirectory(file);
         }
     }
-
     @Test
+    @Order(1)
     public void testFetchCommandWithParameters(QuarkusMainLauncher launcher) {
         File file = new File("./.mbio_data");
 
@@ -63,10 +62,22 @@ public class FetchTest {
 
         assert file.exists();
 
+        result = launcher.launch("fetch", "-u", "https://www.google.com", "-u", "https://www.yahoo.com", "-o", "output.out");
+
+        assert result.exitCode() == 0;
+
+        File outputFile0 = new File("0_output.out");
+        assert outputFile0.exists();
+
+        File outputFile1 = new File("1_output.out");
+        assert outputFile1.exists();
+
+        assert outputFile0.delete() && outputFile1.delete();
 
     }
 
     @Test
+    @Order(2)
     public void testFetchCommandWithFile(QuarkusMainLauncher launcher) throws IOException {
 
         File file = new File("./.mbio_data");
