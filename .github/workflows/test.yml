@@ -33,3 +33,11 @@ jobs:
       uses: codacy/codacy-analysis-cli-action@v4.2.0
       with:
         project-token: ${{ secrets.CODACY_API_TOKEN }}
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./target/jacoco-report/jacoco.xml
+        flags: unit
+        name: unit
+        fail_ci_if_error: true
