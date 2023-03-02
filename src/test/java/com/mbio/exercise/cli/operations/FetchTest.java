@@ -75,7 +75,6 @@ public class FetchTest {
         assert outputFile0.delete() && outputFile1.delete();
 
     }
-
     @Test
     @Order(2)
     public void testFetchCommandWithFile(QuarkusMainLauncher launcher) throws IOException {
