@@ -29,10 +29,6 @@ jobs:
       with:
         project-token: ${{ secrets.CODACY_API_TOKEN }}
         coverage-reports: target/jacoco-report/jacoco.xml
-    - name: Codacy Analysis CLI
-      uses: codacy/codacy-analysis-cli-action@v4.2.0
-      with:
-        project-token: ${{ secrets.CODACY_API_TOKEN }}
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       with:
