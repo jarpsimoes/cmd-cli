@@ -5,6 +5,7 @@ import com.mbio.exercise.cli.datastore.impls.DatastoreImpl;
 import com.mbio.exercise.cli.datastore.obj.HttpResponseData;
 import com.mbio.exercise.cli.utils.FileTestUtils;
 import com.mbio.exercise.cli.utils.Utils;
+import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.CsvParser;
 import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.CsvParserSettings;
@@ -13,6 +14,7 @@ import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.UnescapedQuoteH
 import java.io.*;
 import java.util.List;
 
+@QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DatastoreTest {
 

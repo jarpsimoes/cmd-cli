@@ -127,7 +127,6 @@ public class Utils {
 
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         String line;
-        StringBuilder content = new StringBuilder();
 
         List<HttpResponseData> result = new ArrayList<>();
 
