@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @CommandLine.Command(name = "fetch", description = "Fetches Urls", mixinStandardHelpOptions = true)
 public class Fetch implements Runnable {
@@ -48,12 +49,18 @@ public class Fetch implements Runnable {
                 }
             }
         }
+        try {
+            loadUrls(urls);
+        } catch (IOException e) {
+            logger.error("Error while fetching urls");
+            throw new RuntimeException(e);
+        }
 
-        loadUrls(urls);
     }
 
-    private void loadUrls(List<String> urls) {
+    private void loadUrls(List<String> urls) throws IOException {
 
+        AtomicBoolean error = new AtomicBoolean(false);
         urls.forEach(u -> {
 
             URL url = null;
@@ -68,10 +75,14 @@ public class Fetch implements Runnable {
 
             } catch (IOException e) {
                 logger.error("Error while fetching url: {}", url);
-                throw new RuntimeException(e);
+                error.set(true);
             }
 
         });
+
+        if(error.get()) {
+            throw new IOException("Error while fetching urls");
+        }
     }
     private void writeOutput(String content, String filePath) throws IOException {
         File file = new File(output);

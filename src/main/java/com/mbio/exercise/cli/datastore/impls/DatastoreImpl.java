@@ -261,6 +261,7 @@ public class DatastoreImpl implements Datastore {
 
                 });
             }
+        default -> throw new IllegalStateException("Unexpected value: " + type);
         }
 
         writer.flush();
