@@ -4,9 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbio.exercise.cli.datastore.impls.DatastoreImpl;
 import com.mbio.exercise.cli.datastore.obj.HttpResponseData;
 import com.mbio.exercise.cli.utils.FileTestUtils;
+import com.mbio.exercise.cli.utils.Utils;
 import org.junit.jupiter.api.*;
-import java.io.File;
-import java.io.IOException;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.CsvParser;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.CsvParserSettings;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.csv.UnescapedQuoteHandling;
+
+import java.io.*;
 import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -42,6 +46,11 @@ public class DatastoreTest {
 
         if(fileBackupCSV.exists()) {
             fileBackupCSV.delete();
+        }
+        File fileBackupTXT = new File("./backup.txt");
+
+        if(fileBackupTXT.exists()) {
+            fileBackupTXT.delete();
         }
     }
 
@@ -144,10 +153,22 @@ public class DatastoreTest {
 
         datastore.backup("./backup.csv", DatastoreImpl.BackupType.CSV);
 
-        File fileCSV = new File("./backup.csv");
 
-        assert fileCSV.exists();
 
+        List<HttpResponseData> allRows = Utils.parseCSV("./backup.csv");
+
+        assert allRows.size() == 3;
+        assert allRows.get(0).getUrl().equals("https://www.google.com");
+        assert allRows.get(1).getUrl().equals("https://www.adadada.com");
+        assert allRows.get(2).getUrl().equals("https://www.adadada.com");
+
+
+
+        datastore.backup("./backup.txt", DatastoreImpl.BackupType.TXT);
+
+        File fileTXT = new File("./backup.txt");
+
+        assert fileTXT.exists();
 
     }
 }

@@ -230,7 +230,8 @@ public class DatastoreImpl implements Datastore {
             case CSV -> {
                 data.forEach(row -> {
                     try {
-                        writer.write(String.format("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", row.getUrl(), row.getResultCode(), row.getContentFile(), row.getContentType(),
+                        writer.write(String.format("'%s';'%s';'%s';'%s';'%s';'%s'", row.getUrl(),
+                                row.getResultCode(), row.getResponseTime(), row.getContentFile(), row.getContentType(),
                                 row.getContent()));
                         writer.newLine();
                     } catch (IOException e) {

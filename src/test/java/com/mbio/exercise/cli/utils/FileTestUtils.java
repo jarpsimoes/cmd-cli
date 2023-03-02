@@ -40,19 +40,15 @@ public class FileTestUtils {
             fileWriter.close();
         }
     }
-    public static String readFile(File file) {
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-            String line;
-            StringBuilder content = new StringBuilder();
+    public static String readFile(File file) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+        String line;
+        StringBuilder content = new StringBuilder();
 
-            while ((line = bufferedReader.readLine()) != null) {
-                content.append(line);
-            }
-
-            return content.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        while ((line = bufferedReader.readLine()) != null) {
+            content.append(line);
         }
+
+        return content.toString();
     }
 }
