@@ -93,6 +93,32 @@ public class DatastoreImpl implements Datastore {
         return result;
     }
 
+    @Override public List<HttpResponseData> getHistoryByGroup(String group)
+            throws IOException {
+        List<HttpResponseData> result = new ArrayList<>();
+
+        AtomicBoolean fail = new AtomicBoolean(false);
+        history.forEach(h -> {
+            if(h.getGroup() != null && h.getGroup().equals(group)) {
+
+                try {
+                    h.setContent(loadContent(h.getContentFile()));
+                    result.add(h);
+                } catch (IOException e) {
+                    logger.error("Error while loading content file: {}",
+                            h.getContentFile());
+                    fail.set(true);
+                }
+
+            }
+        });
+
+        if(fail.get()) throw new IOException(
+                "Error while loading content file(s)");
+
+        return result;
+    }
+
     @Override public void backup(String filePath, BackupType backupType)
             throws IOException {
         List<HttpResponseData> allData = getAllHistory();

@@ -1,6 +1,7 @@
 package com.mbio.exercise.cli.operations;
 
 import com.mbio.exercise.cli.datastore.Datastore;
+import com.mbio.exercise.cli.datastore.obj.FetchUrl;
 import com.mbio.exercise.cli.utils.CLIException;
 import com.mbio.exercise.cli.utils.UrlsTimerTask;
 import com.mbio.exercise.cli.utils.Utils;
@@ -13,7 +14,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Timer;
-import java.util.TimerTask;
 
 @CommandLine.Command(name = "live", description = "Live mode")
 public class Live implements Runnable {
@@ -42,7 +42,7 @@ public class Live implements Runnable {
         try {
 
 
-            List<String> urls = Utils.mergeUrlsAndFileUrls(url, file);
+            List<FetchUrl> urls = Utils.mergeUrlsAndFileUrls(url, file);
             Timer test = new Timer();
 
             UrlsTimerTask urlsTimerTask;

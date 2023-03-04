@@ -7,9 +7,6 @@ import com.mbio.exercise.cli.utils.FileTestUtils;
 import com.mbio.exercise.cli.utils.Utils;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.*;
 import java.util.List;
 
@@ -94,6 +91,7 @@ public class DatastoreTest {
         testData.setContent("OK");
         testData.setResponseTime(100);
         testData.setContentType("text/html");
+        testData.setGroup("group1");
 
         HttpResponseData testData1 = new HttpResponseData();
 
@@ -102,6 +100,7 @@ public class DatastoreTest {
         testData1.setContent("OK");
         testData1.setResponseTime(100);
         testData1.setContentType("text/html");
+        testData1.setGroup("group1");
 
         HttpResponseData result = datastore.addNew(testData);
         HttpResponseData result1 = datastore.addNew(testData1);
@@ -136,6 +135,17 @@ public class DatastoreTest {
     }
     @Test
     @Order(4)
+    public void testGetHistoryByGroup() throws IOException {
+        List<HttpResponseData> listOfResults = datastore.getHistoryByGroup("group1");
+
+        assert listOfResults.size() == 2;
+
+        listOfResults.forEach(result -> {
+            assert result.getUrl().equals("https://www.adadada.com");
+        });
+    }
+    @Test
+    @Order(5)
     public void testBackup() throws IOException {
         datastore.backup("./backup.json", DatastoreImpl.BackupType.JSON);
 

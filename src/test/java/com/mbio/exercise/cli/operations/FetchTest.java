@@ -1,6 +1,6 @@
 package com.mbio.exercise.cli.operations;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.mbio.exercise.cli.datastore.Datastore;
 import com.mbio.exercise.cli.datastore.impls.DatastoreImpl;
 import com.mbio.exercise.cli.utils.FileTestUtils;
@@ -8,9 +8,6 @@ import io.quarkus.test.junit.main.LaunchResult;
 import io.quarkus.test.junit.main.QuarkusMainLauncher;
 import io.quarkus.test.junit.main.QuarkusMainTest;
 import org.junit.jupiter.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 
@@ -46,7 +43,8 @@ public class FetchTest {
     }
     @Test
     @Order(1)
-    public void testFetchCommandWithParameters(QuarkusMainLauncher launcher) {
+    public void testFetchCommandWithParameters(QuarkusMainLauncher launcher)
+    {
         File file = new File("./.mbio_data");
 
         LaunchResult result = launcher.launch("fetch", "-u", "https://www.google.com", "-u", "https://www.yahoo.com");
@@ -73,9 +71,11 @@ public class FetchTest {
         assert outputFile0.delete() && outputFile1.delete();
 
     }
+
     @Test
     @Order(2)
-    public void testFetchCommandWithFile(QuarkusMainLauncher launcher) throws IOException {
+    public void testFetchCommandWithFile(QuarkusMainLauncher launcher)
+            throws IOException {
 
         File file = new File("./.mbio_data");
         File fileList1 = new File("urls.txt");
@@ -95,7 +95,8 @@ public class FetchTest {
         assert result.exitCode() == 0;
 
         FileTestUtils.createFileUrlList("urls_1.txt", urls_second);
-        result = launcher.launch("fetch", "-U", "urls_1.txt", "-U", "urls.txt");
+        result = launcher.launch("fetch", "-U", "urls_1.txt", "-U",
+                "urls.txt");
         assert result.exitCode() == 0;
 
         assert file.exists();
@@ -109,9 +110,11 @@ public class FetchTest {
         }
 
     }
+
     @Test
     @Order(3)
-    public void testFetchCommandWithBoth(QuarkusMainLauncher launcher) throws IOException {
+    public void testFetchCommandWithBoth(QuarkusMainLauncher launcher)
+            throws IOException {
 
         File fileList1 = new File("urls.txt");
 

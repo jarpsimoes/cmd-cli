@@ -10,7 +10,16 @@ public class HttpResponseData {
     private String content;
     private int resultCode;
     private String contentType;
+    private String group;
     private long responseTime;
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
 
     public String getUrl() {
         return url;

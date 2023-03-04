@@ -1,6 +1,7 @@
 package com.mbio.exercise.cli.utils;
 
 import com.mbio.exercise.cli.datastore.Datastore;
+import com.mbio.exercise.cli.datastore.obj.FetchUrl;
 import com.mbio.exercise.cli.datastore.obj.HttpResponseData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,16 +12,16 @@ import java.util.TimerTask;
 
 public class UrlsTimerTask extends TimerTask {
 
-    List<String> urls;
+    List<FetchUrl> urls;
     Logger logger = LoggerFactory.getLogger(UrlsTimerTask.class);
     long limit = 0;
     long count = 0;
     Datastore datastore;
-    public UrlsTimerTask(List<String> urls, Datastore datastore) {
+    public UrlsTimerTask(List<FetchUrl> urls, Datastore datastore) {
         this.urls = urls;
         this.datastore = datastore;
     }
-    public UrlsTimerTask(List<String> urls, Datastore datastore, long limit) {
+    public UrlsTimerTask(List<FetchUrl> urls, Datastore datastore, long limit) {
         this.urls = urls;
         this.datastore = datastore;
         this.limit = limit;
@@ -31,7 +32,7 @@ public class UrlsTimerTask extends TimerTask {
         urls.forEach(url -> {
             try {
 
-                HttpResponseData result = Utils.getContent(new URL(url));
+                HttpResponseData result = Utils.getContent(url.getUrl());
                 logger.info("Fetched url: {} [Result Code: {} | Content Type: {}]", url,
                         result.getResultCode(), result.getContentType());
                 datastore.addNew(result);

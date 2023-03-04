@@ -1,5 +1,6 @@
 package com.mbio.exercise.cli.utils;
 
+import com.mbio.exercise.cli.datastore.obj.FetchUrl;
 import com.mbio.exercise.cli.datastore.obj.HttpResponseData;
 import com.mbio.exercise.cli.operations.Wrapper;
 import com.univocity.parsers.csv.CsvParser;
@@ -20,10 +21,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Utils {
     static Logger logger = LoggerFactory.getLogger(Utils.class);
-    public static List<String> getUrlsFromFile(final String filePath) throws IOException {
+    public static List<FetchUrl> getUrlsFromFile(final String filePath) throws IOException {
 
         File file = new File(filePath);
-        List<String> urls = new ArrayList<>();
+        List<FetchUrl> urls = new ArrayList<>();
 
         if(file.exists() && file.isFile()) {
 
@@ -31,7 +32,7 @@ public class Utils {
 
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                urls.add(line);
+                urls.add(new FetchUrl(new URL(line), file.getName()));
             }
 
             return urls;
@@ -179,14 +180,23 @@ public class Utils {
 
         return result;
     }
-    public static List<String> mergeUrlsAndFileUrls(final String[] urls, final String[] filenames)
+    public static List<FetchUrl> mergeUrlsAndFileUrls(final String[] urls, final String[] filenames)
             throws IOException {
-        List<String> result = new ArrayList<>();
+        List<FetchUrl> result = new ArrayList<>();
 
         AtomicBoolean fail = new AtomicBoolean(false);
 
         if(urls != null && urls.length > 0) {
-            result.addAll(Arrays.stream(urls).toList());
+
+            Arrays.stream(urls).forEach(u -> {
+                try {
+                    result.add(new FetchUrl(new URL(u), "parameter"));
+                } catch (MalformedURLException e) {
+                    logger.error("Error while parsing URL", e);
+                    fail.set(true);
+                }
+            });
+
         }
 
         if(filenames != null && filenames.length > 0) {
