@@ -124,7 +124,7 @@ public class LiveTest {
     @Test
     @Order(3)
     public void testLiveCommandWithBoth(QuarkusMainLauncher launcher)
-            throws IOException {
+            throws IOException, InterruptedException {
         File fileList1 = new File("urls.txt");
 
         if(fileList1.exists()) {
@@ -145,6 +145,8 @@ public class LiveTest {
                         "-u", "https://youtube.com", "-l", "2");
 
         assert result.exitCode() == 0;
+
+        Thread.sleep(1000);
 
         datastore = new DatastoreImpl();
         List<HttpResponseData> results = datastore.getAllHistory();
