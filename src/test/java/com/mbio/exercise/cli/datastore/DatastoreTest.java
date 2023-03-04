@@ -125,7 +125,8 @@ public class DatastoreTest {
     @Test
     @Order(3)
     public void testGetHistoryByUrl() throws IOException {
-        List<HttpResponseData> listOfResults = datastore.getHistoryByURL("https://www.adadada.com");
+        List<HttpResponseData> listOfResults =
+                datastore.getHistoryByURL("https://www.adadada.com");
 
         assert listOfResults.size() == 2;
 
@@ -136,7 +137,8 @@ public class DatastoreTest {
     @Test
     @Order(4)
     public void testGetHistoryByGroup() throws IOException {
-        List<HttpResponseData> listOfResults = datastore.getHistoryByGroup("group1");
+        List<HttpResponseData> listOfResults =
+                datastore.getHistoryByGroup("group1");
 
         assert listOfResults.size() == 2;
 

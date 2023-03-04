@@ -7,15 +7,15 @@ import com.mbio.exercise.cli.utils.FileTestUtils;
 import io.quarkus.test.junit.main.LaunchResult;
 import io.quarkus.test.junit.main.QuarkusMainLauncher;
 import io.quarkus.test.junit.main.QuarkusMainTest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 @QuarkusMainTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LiveTest {
 
     static String[] urls_second = {
@@ -48,6 +48,7 @@ public class LiveTest {
     }
 
     @Test
+    @Order(1)
     public void testLiveCommandWithParameters(QuarkusMainLauncher launcher)
             throws IOException {
 
@@ -65,6 +66,7 @@ public class LiveTest {
     }
 
     @Test
+    @Order(2)
     public void testLiveCommandWithFile(QuarkusMainLauncher launcher)
             throws IOException {
         File fileList1 = new File("urls.txt");
@@ -120,6 +122,7 @@ public class LiveTest {
     }
 
     @Test
+    @Order(3)
     public void testLiveCommandWithBoth(QuarkusMainLauncher launcher)
             throws IOException {
         File fileList1 = new File("urls.txt");

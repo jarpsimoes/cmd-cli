@@ -68,4 +68,23 @@ public class HttpResponseData {
     public void setResponseTime(long responseTime) {
         this.responseTime = responseTime;
     }
+
+    private StringBuilder buildLine() {
+        final StringBuilder sb = new StringBuilder();
+
+        sb.append("| ").append(group).append(" | ");
+        sb.append(url).append(" | ");
+        sb.append(resultCode).append(" | ");
+        sb.append(contentType).append(" | ");
+        sb.append(responseTime).append(" | ");
+
+        return sb.append(System.lineSeparator());
+    }
+    @Override public String toString() {
+
+        return buildLine().toString();
+    }
+    public String toStringWithContent() {
+        return buildLine().append(content).append(System.lineSeparator()).toString();
+    }
 }
