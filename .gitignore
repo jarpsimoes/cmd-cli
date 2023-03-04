@@ -1,5 +1,6 @@
 .idea
 .jenv-version
+.java-version
 #Maven
 target/
 pom.xml.tag
