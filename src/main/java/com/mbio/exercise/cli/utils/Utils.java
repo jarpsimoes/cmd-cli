@@ -21,7 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Utils {
     static Logger logger = LoggerFactory.getLogger(Utils.class);
-    public static List<FetchUrl> getUrlsFromFile(final String filePath) throws IOException {
+    public static List<FetchUrl> getUrlsFromFile(final String filePath)
+            throws IOException {
 
         File file = new File(filePath);
         List<FetchUrl> urls = new ArrayList<>();
@@ -41,7 +42,8 @@ public class Utils {
             throw new FileNotFoundException(String.format("File not found or not a file [%s]", filePath));
         }
     }
-    public static HttpResponseData getContent(final URL url) throws IOException {
+    public static HttpResponseData getContent(final URL url)
+            throws IOException {
 
         HttpResponseData httpResponseData = new HttpResponseData();
 
@@ -89,7 +91,8 @@ public class Utils {
 
         return httpResponseData;
     }
-    public static List<HttpResponseData> parseCSV(final String fileName) throws FileNotFoundException {
+    public static List<HttpResponseData> parseCSV(final String fileName)
+            throws FileNotFoundException {
         File fileCSV = new File(fileName);
 
         if(!fileCSV.exists() || !fileCSV.isFile()) {
@@ -124,7 +127,8 @@ public class Utils {
 
         return allData;
     }
-    public static List<HttpResponseData> parseTXT(final String fileName) throws IOException {
+    public static List<HttpResponseData> parseTXT(final String fileName)
+            throws IOException {
         File file = new File(fileName);
 
         if(!file.exists() || !file.isFile()) {
@@ -180,8 +184,8 @@ public class Utils {
 
         return result;
     }
-    public static List<FetchUrl> mergeUrlsAndFileUrls(final String[] urls, final String[] filenames)
-            throws IOException {
+    public static List<FetchUrl> mergeUrlsAndFileUrls(final String[] urls,
+            final String[] filenames) throws IOException {
         List<FetchUrl> result = new ArrayList<>();
 
         AtomicBoolean fail = new AtomicBoolean(false);
@@ -216,5 +220,23 @@ public class Utils {
 
         return result;
     }
+    public static void writeOutput(String content, String filePath)
+            throws IOException {
+        File file = new File(filePath);
 
+        if(file.exists()) {
+            logger.error("File already exists: {}", filePath);
+            throw new IOException("File already exists: " + filePath);
+        }
+
+        if(!file.createNewFile()) {
+            logger.error("Error while creating file: {}", filePath);
+            throw new IOException("Error while creating file: " + filePath);
+        }
+
+        FileWriter writer = new FileWriter(file);
+        writer.write(content);
+        writer.flush();
+        writer.close();
+    }
 }

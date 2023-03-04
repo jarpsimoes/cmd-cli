@@ -33,13 +33,16 @@ public class UrlsTimerTask extends TimerTask {
             try {
 
                 HttpResponseData result = Utils.getContent(url.getUrl());
-                logger.info("Fetched url: {} [Result Code: {} | Content Type: {}]", url,
+                result.setGroup(url.getOrigin());
+                logger.info(
+                        "Fetched url: {} [Result Code: {} | Content Type: {}]",
+                        url.getUrl(),
                         result.getResultCode(), result.getContentType());
                 datastore.addNew(result);
 
 
             } catch (IOException e) {
-                logger.error("Error while fetching url: {}", url);
+                logger.error("Error while fetching url: {}", url.getUrl());
             }
 
         });

@@ -3,6 +3,7 @@ package com.mbio.exercise.cli.operations;
 import com.mbio.exercise.cli.datastore.Datastore;
 import com.mbio.exercise.cli.datastore.obj.HttpResponseData;
 import com.mbio.exercise.cli.utils.CLIException;
+import com.mbio.exercise.cli.utils.Utils;
 import picocli.CommandLine;
 
 import javax.inject.Inject;
@@ -34,6 +35,10 @@ public class History implements Runnable {
             description = "All history", defaultValue = "false")
     boolean all;
 
+    @CommandLine.Option(names = {"-o", "--output"},
+            description = "Output file")
+    String output;
+
     @Override public void run() {
 
         try {
@@ -55,36 +60,63 @@ public class History implements Runnable {
     private void allHistory() throws IOException {
 
         List<HttpResponseData> allHistory = datastore.getAllHistory();
-        allHistory.forEach(System.out::println);
+
+        output(allHistory);
+
 
     }
 
-    private void groupHistory() {
+    private void groupHistory() throws IOException {
         List<HttpResponseData> groupHistory = new ArrayList<>();
 
         for (String group : group) {
-            try {
-                groupHistory.addAll(datastore.getHistoryByGroup(group));
-            } catch (IOException e) {
-                throw new CLIException(e);
-            }
+            groupHistory.addAll(datastore.getHistoryByGroup(group));
         }
 
-        groupHistory.forEach(System.out::println);
+        output(groupHistory);
     }
 
-    private void urlHistory() {
+    private void urlHistory() throws IOException {
         List<HttpResponseData> urlHistory = new ArrayList<>();
 
+
         for (String url : url) {
-            try {
-                urlHistory.addAll(datastore.getHistoryByURL(url));
-            } catch (IOException e) {
-                throw new CLIException(e);
-            }
+            urlHistory.addAll(datastore.getHistoryByURL(url));
         }
 
-        urlHistory.forEach(System.out::println);
+        output(urlHistory);
+
+    }
+
+    private void output(List<HttpResponseData> urlHistory)
+            throws IOException {
+        if(output != null && !output.isEmpty()){
+            outputToFile(urlHistory);
+        } else {
+            if(!withContent){
+                urlHistory.forEach(System.out::print);
+            } else {
+                urlHistory.forEach(h -> {
+                    System.out.print(h.toStringWithContent());
+                });
+            }
+        }
+    }
+
+    private void outputToFile(List<HttpResponseData> history)
+            throws IOException {
+
+        StringBuilder sb = new StringBuilder();
+
+        history.forEach(h -> {
+            if(!withContent){
+                sb.append(h.toString());
+            } else {
+                sb.append(h.toStringWithContent());
+            }
+        });
+
+        Utils.writeOutput(sb.toString(), output);
     }
 }
 

@@ -58,7 +58,7 @@ public class Fetch implements Runnable {
                 data.setGroup(urls.get(i).getOrigin());
 
                 if(output != null && !output.isEmpty()) {
-                    writeOutput(data.getContent(), String.format("%s_%s",
+                    Utils.writeOutput(data.getContent(), String.format("%s_%s",
                             i, output));
                 }
                 datastore.addNew(data);
@@ -73,27 +73,6 @@ public class Fetch implements Runnable {
         if(error.get()) {
             throw new IOException("Error while fetching urls");
         }
-    }
-
-    private void writeOutput(String content, String filePath) throws IOException {
-        File file = new File(filePath);
-
-        logger.info("Testing file: {}", filePath);
-
-        if(file.exists()) {
-            logger.error("File already exists: {}", filePath);
-            throw new IOException("File already exists: " + filePath);
-        }
-
-        if(!file.createNewFile()) {
-            logger.error("Error while creating file: {}", filePath);
-            throw new IOException("Error while creating file: " + filePath);
-        }
-
-        FileWriter writer = new FileWriter(file);
-        writer.write(content);
-        writer.flush();
-        writer.close();
     }
 
 }

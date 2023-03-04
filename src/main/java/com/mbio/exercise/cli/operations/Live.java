@@ -56,7 +56,7 @@ public class Live implements Runnable {
             test.scheduleAtFixedRate(urlsTimerTask, 0, interval * 1000L);
 
             if(limit > 0) {
-                Thread.sleep(limit * (interval * 1000L));
+                Thread.sleep((limit + 1) * (interval * 1000L));
             }else{
                 while(true) {
                     if(scanner.nextLine().equals("q")) {
