@@ -33,27 +33,8 @@ public class Fetch implements Runnable {
     @Override
     public void run() {
 
-        List<String> urls = new ArrayList<>();
-
-        if(url != null && url.length > 0) {
-            logger.info("Fetching {} urls", url.length);
-            urls.addAll(Arrays.stream(url).toList());
-        }
-
-        if(file != null && file.length > 0) {
-            logger.info("Fetching {} files", file.length);
-
-            Arrays.stream(file).toList().forEach(f -> {
-                try {
-                    urls.addAll(Utils.getUrlsFromFile(f));
-                } catch (Exception e) {
-                    logger.error("Error while reading file: {}", f);
-                    throw new CLIException(e);
-                }
-            });
-
-        }
         try {
+            List<String> urls = Utils.mergeUrlsAndFileUrls(url, file);
             loadUrls(urls);
         } catch (IOException e) {
             logger.error("Error while fetching urls");
@@ -89,6 +70,7 @@ public class Fetch implements Runnable {
             throw new IOException("Error while fetching urls");
         }
     }
+
     private void writeOutput(String content, String filePath) throws IOException {
         File file = new File(filePath);
 

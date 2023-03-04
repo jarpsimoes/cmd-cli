@@ -2,6 +2,7 @@ package com.mbio.exercise.cli.operations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbio.exercise.cli.datastore.Datastore;
+import com.mbio.exercise.cli.datastore.impls.DatastoreImpl;
 import com.mbio.exercise.cli.utils.FileTestUtils;
 import io.quarkus.test.junit.main.LaunchResult;
 import io.quarkus.test.junit.main.QuarkusMainLauncher;
@@ -17,9 +18,6 @@ import java.io.IOException;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FetchTest {
 
-    ObjectMapper mapper = new ObjectMapper();
-    static Logger logger = LoggerFactory.getLogger(FetchTest.class);
-    @Inject Datastore datastore;
     static String[] urls_second = {
             "https://www.google.com",
             "https://www.yahoo.com",
@@ -108,6 +106,32 @@ public class FetchTest {
         }
         if(fileList2.exists()) {
             fileList2.delete();
+        }
+
+    }
+    @Test
+    @Order(3)
+    public void testFetchCommandWithBoth(QuarkusMainLauncher launcher) throws IOException {
+
+        File fileList1 = new File("urls.txt");
+
+        if(fileList1.exists()) {
+            fileList1.delete();
+        }
+
+        FileTestUtils.createFileUrlList("urls.txt", urls_first);
+
+        LaunchResult result = launcher.launch("fetch", "-U", "urls.txt",
+                "-u", "https://www.google.com", "-u", "https://www.yahoo.com");
+
+        assert result.exitCode() == 0;
+
+        Datastore datastore = new DatastoreImpl();
+
+        assert datastore.getAllHistory().size() == 5;
+
+        if(fileList1.exists()) {
+            fileList1.delete();
         }
 
     }

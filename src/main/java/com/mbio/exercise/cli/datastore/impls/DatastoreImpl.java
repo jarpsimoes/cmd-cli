@@ -20,8 +20,10 @@ public class DatastoreImpl implements Datastore {
     Logger logger = LoggerFactory.getLogger(DatastoreImpl.class);
     List<HttpResponseData> history = new ArrayList<>();
     private static final String DATASTORE_FOLDER = Wrapper.datastore;
-    private static final String DATASTORE_FILE = DATASTORE_FOLDER + File.separator + "index.json";
-    private static final String DATASTORE_CONTENT = DATASTORE_FOLDER + File.separator + "contents";
+    private static final String DATASTORE_FILE = DATASTORE_FOLDER +
+            File.separator + "index.json";
+    private static final String DATASTORE_CONTENT = DATASTORE_FOLDER +
+            File.separator + "contents";
     public enum BackupType {
         TXT,
         JSON,
@@ -31,7 +33,8 @@ public class DatastoreImpl implements Datastore {
         connectDatastore();
     }
 
-    @Override public HttpResponseData addNew(final HttpResponseData data) throws IOException {
+    @Override public HttpResponseData addNew(final HttpResponseData data)
+            throws IOException {
 
         String uuid = UUID.randomUUID().toString();
 
@@ -53,17 +56,20 @@ public class DatastoreImpl implements Datastore {
             try {
                 h.setContent(loadContent(h.getContentFile()));
             } catch (IOException e) {
-                logger.error("Error while loading content file: {}", h.getContentFile());
+                logger.error("Error while loading content file: {}",
+                        h.getContentFile());
                 fail.set(true);
             }
         });
 
-        if(fail.get()) throw new IOException("Error while loading content file(s)");
+        if(fail.get()) throw new IOException(
+                "Error while loading content file(s)");
 
         return history;
     }
 
-    @Override public List<HttpResponseData> getHistoryByURL(String url) throws IOException {
+    @Override public List<HttpResponseData> getHistoryByURL(String url)
+            throws IOException {
 
         List<HttpResponseData> result = new ArrayList<>();
         AtomicBoolean fail = new AtomicBoolean(false);
@@ -74,20 +80,22 @@ public class DatastoreImpl implements Datastore {
                     h.setContent(loadContent(h.getContentFile()));
                     result.add(h);
                 } catch (IOException e) {
-                    logger.error("Error while loading content file: {}", h.getContentFile());
+                    logger.error("Error while loading content file: {}",
+                            h.getContentFile());
                     fail.set(true);
                 }
 
             }
         });
 
-        if(fail.get()) throw new IOException("Error while loading content file(s)");
+        if(fail.get()) throw new IOException(
+                "Error while loading content file(s)");
         return result;
     }
 
-    @Override public void backup(String filePath, BackupType backupType) throws IOException {
+    @Override public void backup(String filePath, BackupType backupType)
+            throws IOException {
         List<HttpResponseData> allData = getAllHistory();
-
         writeBackUp(filePath, allData, backupType);
     }
 
@@ -95,14 +103,20 @@ public class DatastoreImpl implements Datastore {
 
     }
     private void addContent(HttpResponseData data) throws IOException {
-        File contentFile = new File(DATASTORE_CONTENT + File.separator + data.getContentFile());
+        File contentFile = new File(DATASTORE_CONTENT + File.separator
+                + data.getContentFile());
         if(!contentFile.exists()) {
-            logger.info("Content file not found: {}", contentFile.getAbsolutePath());
-            logger.info("Creating content file: {}", contentFile.getAbsolutePath());
+            logger.info("Content file not found: {}",
+                    contentFile.getAbsolutePath());
+            logger.info("Creating content file: {}",
+                    contentFile.getAbsolutePath());
 
-            if(!contentFile.createNewFile()) throw new IOException("Error while creating content file: " + contentFile.getAbsolutePath());
+            if(!contentFile.createNewFile()) throw new
+                    IOException("Error while creating content file: "
+                    + contentFile.getAbsolutePath());
         } else {
-            logger.info("Content file found: {}", contentFile.getAbsolutePath());
+            logger.info("Content file found: {}",
+                    contentFile.getAbsolutePath());
         }
 
         FileWriter writer = new FileWriter(contentFile);
@@ -115,19 +129,27 @@ public class DatastoreImpl implements Datastore {
         File mainDirectory = new File(DATASTORE_FOLDER);
 
         if(!mainDirectory.exists()) {
-            logger.info("Main directory not found: {}", mainDirectory.getAbsolutePath());
-            logger.info("Creating main directory: {}", mainDirectory.getAbsolutePath());
+            logger.info("Main directory not found: {}",
+                    mainDirectory.getAbsolutePath());
+            logger.info("Creating main directory: {}",
+                    mainDirectory.getAbsolutePath());
 
-            if(!mainDirectory.mkdir()) throw new IOException("Error while creating main directory: " + mainDirectory.getAbsolutePath());
+            if(!mainDirectory.mkdir()) throw new
+                    IOException("Error while creating main directory: "
+                    + mainDirectory.getAbsolutePath());
         }
 
         File indexJson = new File(DATASTORE_FILE);
 
         if(!indexJson.exists()) {
-            logger.info("Index file not found: {}", indexJson.getAbsolutePath());
-            logger.info("Creating index file: {}", indexJson.getAbsolutePath());
+            logger.info("Index file not found: {}",
+                    indexJson.getAbsolutePath());
+            logger.info("Creating index file: {}",
+                    indexJson.getAbsolutePath());
 
-            if(!indexJson.createNewFile()) throw new IOException("Error while creating index file: " + indexJson.getAbsolutePath());
+            if(!indexJson.createNewFile())
+                throw new IOException("Error while creating index file: "
+                    + indexJson.getAbsolutePath());
 
             FileWriter writer = new FileWriter(indexJson);
             writer.write("[]");
@@ -143,10 +165,15 @@ public class DatastoreImpl implements Datastore {
         File contentsDirectory = new File(DATASTORE_CONTENT);
 
         if(!contentsDirectory.exists()) {
-            logger.info("Contents directory not found: {}", contentsDirectory.getAbsolutePath());
-            logger.info("Creating contents directory: {}", contentsDirectory.getAbsolutePath());
+            logger.info("Contents directory not found: {}",
+                    contentsDirectory.getAbsolutePath());
+            logger.info("Creating contents directory: {}",
+                    contentsDirectory.getAbsolutePath());
 
-            if(!contentsDirectory.mkdir()) throw new IOException("Error while creating contents directory: " + contentsDirectory.getAbsolutePath());
+            if(!contentsDirectory.mkdir())
+                throw new IOException(
+                        "Error while creating contents directory: "
+                        + contentsDirectory.getAbsolutePath());
         }
 
     }
@@ -172,11 +199,17 @@ public class DatastoreImpl implements Datastore {
 
         File mainDirectory = new File(".mbio_data");
 
-        if(!mainDirectory.exists()) throw new IOException("Main directory not found: " + mainDirectory.getAbsolutePath());
+        if(!mainDirectory.exists())
+            throw new IOException("Main directory not found: "
+                + mainDirectory.getAbsolutePath());
 
-        File indexJson = new File(mainDirectory.getAbsolutePath() + File.separator + "index.json");
+        File indexJson =
+                new File(mainDirectory.getAbsolutePath()
+                        + File.separator + "index.json");
 
-        if(!indexJson.exists()) throw new IOException("Index file not found: " + indexJson.getAbsolutePath());
+        if(!indexJson.exists())
+            throw new IOException("Index file not found: "
+                    + indexJson.getAbsolutePath());
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(history);
@@ -189,7 +222,8 @@ public class DatastoreImpl implements Datastore {
     }
     private String loadContent(String filePath) throws IOException {
 
-        File file = new File(DATASTORE_CONTENT + File.separator + filePath);
+        File file = new File(DATASTORE_CONTENT + File.separator
+                + filePath);
 
         if(!file.exists()) throw new IOException("File not found: " + filePath);
 
@@ -206,13 +240,17 @@ public class DatastoreImpl implements Datastore {
 
     }
 
-    private void writeBackUp(String filePath, List<HttpResponseData> data, BackupType type) throws IOException {
+    private void writeBackUp(String filePath, List<HttpResponseData> data,
+            BackupType type)
+            throws IOException {
 
         File file = new File(filePath);
 
-        if(file.exists()) throw new IOException("File already exist: " + filePath);
+        if(file.exists()) throw new IOException("File already exist: "
+                + filePath);
 
-        if(!file.createNewFile()) throw new IOException("Error while creating file: " + filePath);
+        if(!file.createNewFile())
+            throw new IOException("Error while creating file: " + filePath);
 
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -230,12 +268,15 @@ public class DatastoreImpl implements Datastore {
             case CSV -> {
                 data.forEach(row -> {
                     try {
-                        writer.write(String.format("'%s';'%s';'%s';'%s';'%s'", row.getUrl(),
+                        writer.write(
+                                String.format("'%s';'%s';'%s';'%s';'%s'",
+                                row.getUrl(),
                                 row.getResultCode(), row.getResponseTime(),
                                 row.getContentType(), row.getContent()));
                         writer.newLine();
                     } catch (IOException e) {
-                        logger.error("Error while writing CSV file: {}", e.getMessage());
+                        logger.error("Error while writing CSV file: {}",
+                                e.getMessage());
                         fail.set(true);
                     }
 
@@ -246,18 +287,26 @@ public class DatastoreImpl implements Datastore {
                     try {
                         writer.write(String.format("URL: %s", row.getUrl()));
                         writer.newLine();
-                        writer.write(String.format("Result code: %s", row.getResultCode()));
+                        writer.write(String.format("Result code: %s",
+                                row.getResultCode()));
                         writer.newLine();
-                        writer.write(String.format("Response time: %s", row.getResponseTime()));
+                        writer.write(String.format("Response time: %s",
+                                row.getResponseTime()));
                         writer.newLine();
-                        writer.write(String.format("Content type: %s", row.getContentType()));
+                        writer.write(String.format("Content type: %s",
+                                row.getContentType()));
                         writer.newLine();
-                        writer.write(String.format("Content: %s", row.getContent()));
+                        writer.write(String.format("Content: %s",
+                                row.getContent()));
                         writer.newLine();
-                        writer.write("--------------------------------------------------");
+                        writer
+                        .write(
+                        "--------------------------------------------------"
+                        );
                         writer.newLine();
                     } catch (IOException e) {
-                        logger.error("Error while writing TXT file: {}", e.getMessage());
+                        logger.error("Error while writing TXT file: {}",
+                                e.getMessage());
                         fail.set(true);
                     }
 
@@ -269,6 +318,7 @@ public class DatastoreImpl implements Datastore {
         writer.flush();
         writer.close();
 
-        if(fail.get()) throw new IOException("Error while writing file: " + filePath);
+        if(fail.get()) throw new IOException("Error while writing file: "
+                + filePath);
     }
 }

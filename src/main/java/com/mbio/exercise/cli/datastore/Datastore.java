@@ -14,7 +14,8 @@ public interface Datastore {
 
     List<HttpResponseData> getHistoryByURL(String url) throws IOException;
 
-    void backup(String filePath, DatastoreImpl.BackupType backupType) throws IOException;
+    void backup(String filePath, DatastoreImpl.BackupType backupType) throws
+            IOException;
 
     void restore(List<HttpResponseData> data);
 

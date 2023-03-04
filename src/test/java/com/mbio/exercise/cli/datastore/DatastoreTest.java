@@ -7,6 +7,9 @@ import com.mbio.exercise.cli.utils.FileTestUtils;
 import com.mbio.exercise.cli.utils.Utils;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.List;
 
@@ -107,8 +110,10 @@ public class DatastoreTest {
         List<HttpResponseData> history = datastore.getAllHistory();
         assert history.size() == 3;
 
-        File file = new File("./.mbio_data/contents/" + result.getContentFile());
-        File file1 = new File("./.mbio_data/contents/" + result1.getContentFile());
+        File file = new File("./.mbio_data/contents/"
+                + result.getContentFile());
+        File file1 = new File("./.mbio_data/contents/"
+                + result1.getContentFile());
 
         assert file.exists();
         assert file1.exists();
@@ -143,7 +148,8 @@ public class DatastoreTest {
         assert fileContent.contains("https://www.google.com");
         assert fileContent.contains("https://www.adadada.com");
 
-        HttpResponseData[] data = objectMapper.readValue(fileContent, HttpResponseData[].class);
+        HttpResponseData[] data = objectMapper.readValue(fileContent,
+                HttpResponseData[].class);
 
         assert data.length == 3;
 
@@ -158,7 +164,8 @@ public class DatastoreTest {
 
         datastore.backup("./backup.txt", DatastoreImpl.BackupType.TXT);
 
-        List<HttpResponseData> parsedRows = Utils.parseTXT("./backup.txt");
+        List<HttpResponseData> parsedRows = Utils
+                                        .parseTXT("./backup.txt");
 
         assert parsedRows.size() == 3;
         assert parsedRows.get(0).getUrl().equals("https://www.google.com");

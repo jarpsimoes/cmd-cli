@@ -5,6 +5,8 @@ import com.mbio.exercise.cli.operations.Wrapper;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import com.univocity.parsers.csv.UnescapedQuoteHandling;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
@@ -12,9 +14,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Utils {
+    static Logger logger = LoggerFactory.getLogger(Utils.class);
     public static List<String> getUrlsFromFile(final String filePath) throws IOException {
 
         File file = new File(filePath);
@@ -174,4 +179,32 @@ public class Utils {
 
         return result;
     }
+    public static List<String> mergeUrlsAndFileUrls(final String[] urls, final String[] filenames)
+            throws IOException {
+        List<String> result = new ArrayList<>();
+
+        AtomicBoolean fail = new AtomicBoolean(false);
+
+        if(urls != null && urls.length > 0) {
+            result.addAll(Arrays.stream(urls).toList());
+        }
+
+        if(filenames != null && filenames.length > 0) {
+            Arrays.stream(filenames).toList().forEach(f -> {
+                try {
+                    result.addAll(Utils.getUrlsFromFile(f));
+                } catch (IOException e) {
+                    logger.error("Error while reading file", e);
+                    fail.set(true);
+                }
+            });
+        }
+
+        if(fail.get()) {
+            throw new IOException("Error while reading file");
+        }
+
+        return result;
+    }
+
 }
