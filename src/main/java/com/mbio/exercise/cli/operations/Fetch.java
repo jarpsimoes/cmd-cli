@@ -52,7 +52,7 @@ public class Fetch implements Runnable {
 
         IntStream.range(0, urls.size()).forEach(i -> {
             try {
-                URL url = urls.get(i).getUrl();;
+                URL url = urls.get(i).getUrl();
                 HttpResponseData data = Utils.getContent(url);
 
                 data.setGroup(urls.get(i).getOrigin());

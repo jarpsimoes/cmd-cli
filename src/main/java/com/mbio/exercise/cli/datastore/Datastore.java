@@ -16,9 +16,14 @@ public interface Datastore {
 
     List<HttpResponseData> getHistoryByGroup(String group) throws IOException;
 
-    void backup(String filePath, DatastoreImpl.BackupType backupType) throws
+    void backup(String filePath, Datastore.BackupType backupType) throws
             IOException;
 
     void restore(List<HttpResponseData> data);
+    enum BackupType {
+        TXT,
+        JSON,
+        CSV
+    }
 
 }

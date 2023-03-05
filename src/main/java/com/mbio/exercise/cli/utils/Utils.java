@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -109,19 +110,22 @@ public class Utils {
         parserSettings.setHeaderExtractionEnabled(false);
         parserSettings.setDelimiterDetectionEnabled(true);
         parserSettings.setQuoteDetectionEnabled(true);
-
+        parserSettings.setMaxCharsPerColumn(1000000);
 
         CsvParser parser = new CsvParser(parserSettings);
 
         List<String[]> allRows = parser.parseAll(reader);
         List<HttpResponseData> allData = new ArrayList<>();
         allRows.forEach(row -> {
+            String contentDecoded = Arrays.toString(
+                    Base64.getDecoder().decode(row[4]));
+
             HttpResponseData httpResponseData = new HttpResponseData();
             httpResponseData.setUrl(row[0]);
             httpResponseData.setResultCode(Integer.parseInt(row[1]));
             httpResponseData.setResponseTime(Long.parseLong(row[2]));
             httpResponseData.setContentType(row[3]);
-            httpResponseData.setContent(row[4]);
+            httpResponseData.setContent(contentDecoded);
             allData.add(httpResponseData);
         });
 
@@ -164,7 +168,10 @@ public class Utils {
                 entity.setContentType(line.substring(13).trim());
             } else
             if(line.startsWith("Content:")){
-                entity.setContent(line.substring(8).trim());
+                String contentDecoded = Arrays.toString(
+                        Base64.getDecoder().decode(line.substring(8).trim()));
+
+                entity.setContent(contentDecoded);
                 startLongText = true;
             } else {
                 if(startLongText && line.equals("--------------------------------------------------")) {

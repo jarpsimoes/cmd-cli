@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @ApplicationScoped
@@ -24,11 +21,6 @@ public class DatastoreImpl implements Datastore {
             File.separator + "index.json";
     private static final String DATASTORE_CONTENT = DATASTORE_FOLDER +
             File.separator + "contents";
-    public enum BackupType {
-        TXT,
-        JSON,
-        CSV
-    }
     public DatastoreImpl() throws IOException {
         connectDatastore();
     }
@@ -294,11 +286,15 @@ public class DatastoreImpl implements Datastore {
             case CSV -> {
                 data.forEach(row -> {
                     try {
+
+                        String contentEncoded = Base64.getEncoder()
+                                .encodeToString(row.getContent().getBytes());
                         writer.write(
                                 String.format("'%s';'%s';'%s';'%s';'%s'",
                                 row.getUrl(),
                                 row.getResultCode(), row.getResponseTime(),
-                                row.getContentType(), row.getContent()));
+                                row.getContentType(), contentEncoded));
+
                         writer.newLine();
                     } catch (IOException e) {
                         logger.error("Error while writing CSV file: {}",
@@ -311,6 +307,9 @@ public class DatastoreImpl implements Datastore {
             case TXT -> {
                 data.forEach(row -> {
                     try {
+                        String contentEncoded = Base64.getEncoder()
+                                .encodeToString(row.getContent().getBytes());
+
                         writer.write(String.format("URL: %s", row.getUrl()));
                         writer.newLine();
                         writer.write(String.format("Result code: %s",
@@ -323,7 +322,7 @@ public class DatastoreImpl implements Datastore {
                                 row.getContentType()));
                         writer.newLine();
                         writer.write(String.format("Content: %s",
-                                row.getContent()));
+                                contentEncoded));
                         writer.newLine();
                         writer
                         .write(
