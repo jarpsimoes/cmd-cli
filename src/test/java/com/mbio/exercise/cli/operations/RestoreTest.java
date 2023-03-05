@@ -59,8 +59,8 @@ public class RestoreTest {
 
         assert result.exitCode() == 0;
 
-        backup.delete();
-        fileList1.delete();
+        assert backup.delete();
+        assert fileList1.delete();
 
     }
 

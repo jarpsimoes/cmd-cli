@@ -15,21 +15,27 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @ApplicationScoped
 public class DatastoreImpl implements Datastore {
+
     Logger logger = LoggerFactory.getLogger(DatastoreImpl.class);
+
     List<HttpResponseData> history = new ArrayList<>();
-    private static String DATASTORE_FOLDER = Wrapper.datastore;
-    private static String DATASTORE_FILE = DATASTORE_FOLDER +
+
+    private String datastoreFolder = Wrapper.datastore;
+
+    private String datastoreFile = datastoreFolder +
             File.separator + "index.json";
-    private static String DATASTORE_CONTENT = DATASTORE_FOLDER +
+
+    private String datastoreContent = datastoreFolder +
             File.separator + "contents";
+
     public DatastoreImpl() throws IOException {
         connectDatastore();
     }
 
     public DatastoreImpl(String datastore) throws IOException {
-        DATASTORE_FOLDER = datastore;
-        DATASTORE_FILE = DATASTORE_FOLDER + File.separator + "index.json";
-        DATASTORE_CONTENT = DATASTORE_FOLDER + File.separator + "contents";
+        datastoreFolder = datastore;
+        datastoreFile = datastoreFolder + File.separator + "index.json";
+        datastoreContent = datastoreFolder + File.separator + "contents";
         connectDatastore();
     }
 
@@ -136,13 +142,17 @@ public class DatastoreImpl implements Datastore {
         writeBackUp(filePath, allData, backupType);
     }
 
-    @Override public void restore(String filename, Datastore.BackupType type) throws IOException {
+    @Override public void restore(String filename, Datastore.BackupType type)
+            throws IOException {
 
         List<HttpResponseData> data;
         ObjectMapper mapper = new ObjectMapper();
 
         switch (type) {
-        case JSON -> data = mapper.readValue(new File(filename), mapper.getTypeFactory().constructCollectionType(List.class, HttpResponseData.class));
+        case JSON -> data = mapper.readValue(
+                new File(filename),
+                mapper.getTypeFactory().
+                constructCollectionType(List.class, HttpResponseData.class));
         case CSV -> data = Utils.parseCSV(filename);
         case TXT -> data = Utils.parseTXT(filename);
         default -> throw new IOException("Invalid backup type");
@@ -152,7 +162,7 @@ public class DatastoreImpl implements Datastore {
 
     }
     private void addContent(HttpResponseData data) throws IOException {
-        File contentFile = new File(DATASTORE_CONTENT + File.separator
+        File contentFile = new File(datastoreContent + File.separator
                 + data.getContentFile());
         if(!contentFile.exists()) {
             logger.info("Content file not found: {}",
@@ -173,9 +183,10 @@ public class DatastoreImpl implements Datastore {
         writer.flush();
         writer.close();
     }
+
     private void connectDatastore() throws IOException {
 
-        File mainDirectory = new File(DATASTORE_FOLDER);
+        File mainDirectory = new File(datastoreFolder);
 
         if(!mainDirectory.exists()) {
             logger.info("Main directory not found: {}",
@@ -188,7 +199,7 @@ public class DatastoreImpl implements Datastore {
                     + mainDirectory.getAbsolutePath());
         }
 
-        File indexJson = new File(DATASTORE_FILE);
+        File indexJson = new File(datastoreFile);
 
         if(!indexJson.exists()) {
             logger.info("Index file not found: {}",
@@ -211,7 +222,7 @@ public class DatastoreImpl implements Datastore {
             loadDatastore(indexJson);
         }
 
-        File contentsDirectory = new File(DATASTORE_CONTENT);
+        File contentsDirectory = new File(datastoreContent);
 
         if(!contentsDirectory.exists()) {
             logger.info("Contents directory not found: {}",
@@ -226,6 +237,7 @@ public class DatastoreImpl implements Datastore {
         }
 
     }
+
     private void loadDatastore(File file) throws IOException {
 
         if(!file.exists()) throw new IOException("File not found: " + file.getAbsolutePath());
@@ -244,6 +256,7 @@ public class DatastoreImpl implements Datastore {
         history.addAll(Arrays.stream(data).toList());
 
     }
+
     private void flushDatastore() throws IOException {
 
         File mainDirectory = new File(".mbio_data");
@@ -269,9 +282,10 @@ public class DatastoreImpl implements Datastore {
         writer.close();
 
     }
+
     private String loadContent(String filePath) throws IOException {
 
-        File file = new File(DATASTORE_CONTENT + File.separator
+        File file = new File(datastoreContent + File.separator
                 + filePath);
 
         if(!file.exists()) throw new IOException("File not found: " + filePath);
