@@ -50,7 +50,7 @@ public class LiveTest {
     @Test
     @Order(1)
     public void testLiveCommandWithParameters(QuarkusMainLauncher launcher)
-            throws IOException, InterruptedException {
+            throws IOException {
 
         LaunchResult result = launcher.launch("live", "-u", "https://www.google.com", "-u",
                 "https://www.yahoo.com", "-l", "2");
@@ -67,7 +67,7 @@ public class LiveTest {
     @Test
     @Order(2)
     public void testLiveCommandWithFile(QuarkusMainLauncher launcher)
-            throws IOException, InterruptedException {
+            throws IOException {
         File fileList1 = new File("urls.txt");
 
         if(fileList1.exists()) {

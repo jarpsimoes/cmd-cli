@@ -5,7 +5,7 @@ import picocli.CommandLine;
 
 @TopCommand
 @CommandLine.Command(mixinStandardHelpOptions = true,
-        subcommands = { Fetch.class, Live.class, History.class, Backup.class })
+        subcommands = { Fetch.class, Live.class, History.class, Backup.class, Restore.class })
 public class Wrapper {
     @CommandLine.Option(names = {"-d", "--datastore"}, description = "Datastore to use", defaultValue = ".mbio_data")
     public static String datastore = ".mbio_data";

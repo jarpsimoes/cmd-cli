@@ -186,11 +186,20 @@ the local container.
 docker run -v (PWD)/.mbio_data:/home/jboss/.mbio_data \ 
             -v (PWD)/data:/home/jboss/data \
             ghcr.io/jarpsimoes/cmd-cli:latest \
+            restore -i data/backup.json -t JSON
+```
+
+#### Help:
+```shell script
+docker run -v (PWD)/.mbio_data:/home/jboss/.mbio_data \ 
+            -v (PWD)/data:/home/jboss/data \
+            ghcr.io/jarpsimoes/cmd-cli:latest \
             restore help
-Usage: <main class> backup -o=<output> [-t=<type>]
-Backup mode
-  -o, --output=<output>   Output file
-  -t, --type=<type>       Backup
+Usage: <main class> restore -i=<input> [-t=<type>]
+Restore mode
+  -i, --input=<input>   Input file
+  -t, --type=<type>     Backup
+
 ```
 
 
