@@ -12,6 +12,7 @@ public class FetchUrl {
         this.url = url;
         this.origin = origin;
     }
+
     public FetchUrl() {
     }
 

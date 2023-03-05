@@ -23,6 +23,7 @@ public interface Datastore {
 
     void restore(String filename, Datastore.BackupType backupType) throws
             IOException;
+
     enum BackupType {
         TXT,
         JSON,

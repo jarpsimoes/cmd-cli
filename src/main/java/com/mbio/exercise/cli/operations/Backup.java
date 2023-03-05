@@ -12,10 +12,12 @@ public class Backup implements Runnable {
 
     @Inject Datastore datastore;
 
-    @CommandLine.Option(names = {"-o", "--output"}, description = "Output file", required = true)
+    @CommandLine.Option(names = {"-o", "--output"},
+            description = "Output file", required = true)
     String output;
 
-    @CommandLine.Option(names = {"-t", "--type"}, description = "Backup ", defaultValue = "json")
+    @CommandLine.Option(names = {"-t", "--type"},
+            description = "Backup ", defaultValue = "json")
     Datastore.BackupType type;
 
     @Override public void run() {

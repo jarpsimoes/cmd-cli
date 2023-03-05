@@ -15,7 +15,9 @@ import java.util.List;
 public class DatastoreTest {
 
     static Datastore datastore;
+
     static ObjectMapper objectMapper = new ObjectMapper();
+
     @BeforeAll
     public static void setup() throws IOException {
         File file = new File("./.mbio_data");
@@ -26,6 +28,7 @@ public class DatastoreTest {
 
         datastore = new DatastoreImpl();
     }
+
     @AfterAll
     public static void shutdown() {
         File file = new File("./.mbio_data");
@@ -52,6 +55,7 @@ public class DatastoreTest {
         }
 
     }
+
     @Test
     @Order(1)
     public void testAddNew() throws IOException {
@@ -79,6 +83,7 @@ public class DatastoreTest {
         assert fileContent.contains("OK");
 
     }
+
     @Test
     @Order(2)
     public void testGetAllHistory() throws IOException {
@@ -123,6 +128,7 @@ public class DatastoreTest {
         assert fileContent.contains("OK");
 
     }
+
     @Test
     @Order(3)
     public void testGetHistoryByUrl() throws IOException {
@@ -135,6 +141,7 @@ public class DatastoreTest {
             assert result.getUrl().equals("https://www.adadada.com");
         });
     }
+
     @Test
     @Order(4)
     public void testGetHistoryByGroup() throws IOException {
@@ -147,6 +154,7 @@ public class DatastoreTest {
             assert result.getUrl().equals("https://www.adadada.com");
         });
     }
+
     @Test
     @Order(5)
     public void testBackup() throws IOException {
@@ -190,13 +198,17 @@ public class DatastoreTest {
     @Test
     @Order(6)
     public void testRestore() throws IOException {
-        datastore.backup("./rest_backup.json", DatastoreImpl.BackupType.JSON);
-        datastore.backup("./rest_backup.csv", DatastoreImpl.BackupType.CSV);
-        datastore.backup("./rest_backup.txt", DatastoreImpl.BackupType.TXT);
+        datastore.backup("./rest_backup.json",
+                DatastoreImpl.BackupType.JSON);
+        datastore.backup("./rest_backup.csv",
+                DatastoreImpl.BackupType.CSV);
+        datastore.backup("./rest_backup.txt",
+                DatastoreImpl.BackupType.TXT);
 
         datastore = new DatastoreImpl("./mbio_data_json");
 
-        datastore.restore("./rest_backup.json", DatastoreImpl.BackupType.JSON);
+        datastore.restore("./rest_backup.json",
+                DatastoreImpl.BackupType.JSON);
 
         File fileDatastoreJson = new File("./mbio_data_json");
 
@@ -211,7 +223,8 @@ public class DatastoreTest {
 
         datastore = new DatastoreImpl("./mbio_data_csv");
 
-        datastore.restore("./rest_backup.csv", DatastoreImpl.BackupType.CSV);
+        datastore.restore("./rest_backup.csv",
+                DatastoreImpl.BackupType.CSV);
 
         File fileDatastoreCsv = new File("./mbio_data_csv");
 
@@ -226,7 +239,8 @@ public class DatastoreTest {
 
         datastore = new DatastoreImpl("./mbio_data_txt");
 
-        datastore.restore("./rest_backup.txt", DatastoreImpl.BackupType.TXT);
+        datastore.restore("./rest_backup.txt",
+                DatastoreImpl.BackupType.TXT);
 
         File fileDatastoreTxt = new File("./mbio_data_txt");
 

@@ -5,7 +5,6 @@ import io.quarkus.test.junit.main.LaunchResult;
 import io.quarkus.test.junit.main.QuarkusMainLauncher;
 import io.quarkus.test.junit.main.QuarkusMainTest;
 import org.junit.jupiter.api.*;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -61,7 +60,8 @@ public class HistoryTest {
         assert result.getOutput().contains("https://www.abola.pt");
         assert result.getOutput().contains("https://www.microsoft.com");
 
-        result = launcher.launch("history", "--url", "https://google.pt");
+        result = launcher.launch("history", "--url",
+                "https://google.pt");
 
         assert result.exitCode() == 0;
         assert result.getOutput().contains("https://google.pt");
@@ -85,7 +85,8 @@ public class HistoryTest {
 
         assert result.exitCode() == 0;
 
-        result = launcher.launch("history", "--all", "-c", "-o",  "output.txt");
+        result = launcher.launch("history", "--all", "-c", "-o",
+                "output.txt");
 
         assert result.exitCode() == 0;
 

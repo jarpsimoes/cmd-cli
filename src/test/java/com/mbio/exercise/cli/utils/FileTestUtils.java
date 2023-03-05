@@ -7,7 +7,9 @@ import java.io.*;
 import java.util.Arrays;
 
 public class FileTestUtils {
+
     static Logger logger = LoggerFactory.getLogger(FileTestUtils.class);
+
     public static boolean deleteDirectory(final File directoryToBeDeleted) {
         File[] allContents = directoryToBeDeleted.listFiles();
         if (allContents != null) {
@@ -17,6 +19,7 @@ public class FileTestUtils {
         }
         return directoryToBeDeleted.delete();
     }
+
     public static void createFileUrlList(final String filePath, final String[] urls) throws IOException {
         File file = new File(filePath);
 
@@ -40,6 +43,7 @@ public class FileTestUtils {
             fileWriter.close();
         }
     }
+
     public static String readFile(File file) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         String line;

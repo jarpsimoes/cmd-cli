@@ -20,11 +20,13 @@ public class FetchTest {
             "https://www.yahoo.com",
             "https://www.bing.com"
     };
+
     static String[] urls_first = {
             "https://www.noticiasaominuto.com/",
             "https://www.microsoft.com/",
             "https://www.mercedes-benz.io/"
     };
+
     @BeforeEach
     public void setup() {
         File file = new File("./.mbio_data");
@@ -33,6 +35,7 @@ public class FetchTest {
             FileTestUtils.deleteDirectory(file);
         }
     }
+
     @AfterEach
     public void shutdown() {
         File file = new File("./.mbio_data");
@@ -41,6 +44,7 @@ public class FetchTest {
             FileTestUtils.deleteDirectory(file);
         }
     }
+
     @Test
     @Order(1)
     public void testFetchCommandWithParameters(QuarkusMainLauncher launcher)
@@ -71,6 +75,7 @@ public class FetchTest {
         assert outputFile0.delete() && outputFile1.delete();
 
     }
+
 
     @Test
     @Order(2)
