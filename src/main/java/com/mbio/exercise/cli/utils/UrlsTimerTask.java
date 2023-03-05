@@ -13,10 +13,15 @@ import java.util.TimerTask;
 public class UrlsTimerTask extends TimerTask {
 
     List<FetchUrl> urls;
+
     Logger logger = LoggerFactory.getLogger(UrlsTimerTask.class);
+
     long limit = 0;
+
     long count = 0;
+
     Datastore datastore;
+
     public UrlsTimerTask(List<FetchUrl> urls, Datastore datastore) {
         this.urls = urls;
         this.datastore = datastore;

@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Utils {
+
     static Logger logger = LoggerFactory.getLogger(Utils.class);
+
     public static List<FetchUrl> getUrlsFromFile(final String filePath)
             throws IOException {
 
@@ -43,6 +45,7 @@ public class Utils {
             throw new FileNotFoundException(String.format("File not found or not a file [%s]", filePath));
         }
     }
+
     public static HttpResponseData getContent(final URL url)
             throws IOException {
 
@@ -92,19 +95,24 @@ public class Utils {
 
         return httpResponseData;
     }
+
     public static List<HttpResponseData> parseCSV(final String fileName)
             throws FileNotFoundException {
         File fileCSV = new File(fileName);
 
         if(!fileCSV.exists() || !fileCSV.isFile()) {
-            throw new FileNotFoundException(String.format("File not found or not a file [%s]", fileName));
+            throw new FileNotFoundException(
+                    String.format("File not found or not a file [%s]",
+                            fileName));
         }
 
         Reader reader = new InputStreamReader(new FileInputStream(fileCSV));
 
         CsvParserSettings parserSettings = new CsvParserSettings();
 
-        parserSettings.setUnescapedQuoteHandling(UnescapedQuoteHandling.BACK_TO_DELIMITER);
+        parserSettings
+                .setUnescapedQuoteHandling(
+                        UnescapedQuoteHandling.BACK_TO_DELIMITER);
 
         parserSettings.setLineSeparatorDetectionEnabled(true);
         parserSettings.setHeaderExtractionEnabled(false);
@@ -131,6 +139,7 @@ public class Utils {
 
         return allData;
     }
+
     public static List<HttpResponseData> parseTXT(final String fileName)
             throws IOException {
         File file = new File(fileName);
@@ -191,6 +200,7 @@ public class Utils {
 
         return result;
     }
+
     public static List<FetchUrl> mergeUrlsAndFileUrls(final String[] urls,
             final String[] filenames) throws IOException {
         List<FetchUrl> result = new ArrayList<>();
@@ -227,6 +237,7 @@ public class Utils {
 
         return result;
     }
+
     public static void writeOutput(String content, String filePath)
             throws IOException {
         File file = new File(filePath);

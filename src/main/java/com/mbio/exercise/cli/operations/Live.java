@@ -21,16 +21,19 @@ public class Live implements Runnable {
     Logger logger = LoggerFactory.getLogger(Live.class);
     @Inject Datastore datastore;
 
-    @CommandLine.Option(names = {"-i", "--interval"}, description = "Interval in seconds", defaultValue = "5")
+    @CommandLine.Option(names = {"-i", "--interval"},
+            description = "Interval in seconds", defaultValue = "5")
     int interval;
 
     @CommandLine.Option(names = {"-u", "--url"}, description = "Urls to fetch")
     String[] url;
 
-    @CommandLine.Option(names = {"-U", "--file"}, description = "Files with urls to fetch")
+    @CommandLine.Option(names = {"-U", "--file"},
+            description = "Files with urls to fetch")
     String[] file;
 
-    @CommandLine.Option(names = {"-l", "--limit"}, description = "Limit of urls to fetch", defaultValue = "0")
+    @CommandLine.Option(names = {"-l", "--limit"},
+            description = "Limit of urls to fetch", defaultValue = "0")
     int limit;
 
     @Override public void run() {

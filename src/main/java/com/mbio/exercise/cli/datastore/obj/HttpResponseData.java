@@ -5,12 +5,19 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class HttpResponseData {
+
     private String url;
+
     private String contentFile;
+
     private String content;
+
     private int resultCode;
+
     private String contentType;
+
     private String group;
+
     private long responseTime;
 
     public String getGroup() {
@@ -80,10 +87,12 @@ public class HttpResponseData {
 
         return sb.append(System.lineSeparator());
     }
+
     @Override public String toString() {
 
         return buildLine().toString();
     }
+
     public String toStringWithContent() {
         return buildLine().append(content).append(System.lineSeparator()).toString();
     }
