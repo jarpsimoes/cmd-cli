@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mbio.exercise.cli.datastore.Datastore;
 import com.mbio.exercise.cli.datastore.obj.HttpResponseData;
 import com.mbio.exercise.cli.operations.Wrapper;
+import com.mbio.exercise.cli.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,12 +17,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DatastoreImpl implements Datastore {
     Logger logger = LoggerFactory.getLogger(DatastoreImpl.class);
     List<HttpResponseData> history = new ArrayList<>();
-    private static final String DATASTORE_FOLDER = Wrapper.datastore;
-    private static final String DATASTORE_FILE = DATASTORE_FOLDER +
+    private static String DATASTORE_FOLDER = Wrapper.datastore;
+    private static String DATASTORE_FILE = DATASTORE_FOLDER +
             File.separator + "index.json";
-    private static final String DATASTORE_CONTENT = DATASTORE_FOLDER +
+    private static String DATASTORE_CONTENT = DATASTORE_FOLDER +
             File.separator + "contents";
     public DatastoreImpl() throws IOException {
+        connectDatastore();
+    }
+
+    public DatastoreImpl(String datastore) throws IOException {
+        DATASTORE_FOLDER = datastore;
+        DATASTORE_FILE = DATASTORE_FOLDER + File.separator + "index.json";
+        DATASTORE_CONTENT = DATASTORE_FOLDER + File.separator + "contents";
         connectDatastore();
     }
 
@@ -38,6 +46,17 @@ public class DatastoreImpl implements Datastore {
         flushDatastore();
 
         return data;
+    }
+
+    @Override public void addAll(List<HttpResponseData> data)
+            throws IOException {
+        data.forEach(d -> {
+            try {
+                addNew(d);
+            } catch (IOException e) {
+                logger.error("Error while adding new data to datastore");
+            }
+        });
     }
 
     @Override public List<HttpResponseData> getAllHistory() throws IOException {
@@ -117,7 +136,19 @@ public class DatastoreImpl implements Datastore {
         writeBackUp(filePath, allData, backupType);
     }
 
-    @Override public void restore(List<HttpResponseData> data) {
+    @Override public void restore(String filename, Datastore.BackupType type) throws IOException {
+
+        List<HttpResponseData> data;
+        ObjectMapper mapper = new ObjectMapper();
+
+        switch (type) {
+        case JSON -> data = mapper.readValue(new File(filename), mapper.getTypeFactory().constructCollectionType(List.class, HttpResponseData.class));
+        case CSV -> data = Utils.parseCSV(filename);
+        case TXT -> data = Utils.parseTXT(filename);
+        default -> throw new IOException("Invalid backup type");
+        }
+
+        addAll(data);
 
     }
     private void addContent(HttpResponseData data) throws IOException {

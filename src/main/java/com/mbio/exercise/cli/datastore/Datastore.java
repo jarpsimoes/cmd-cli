@@ -10,6 +10,8 @@ public interface Datastore {
 
     HttpResponseData addNew(HttpResponseData data) throws IOException;
 
+    void addAll(List<HttpResponseData> data) throws IOException;
+
     List<HttpResponseData> getAllHistory() throws IOException;
 
     List<HttpResponseData> getHistoryByURL(String url) throws IOException;
@@ -19,7 +21,8 @@ public interface Datastore {
     void backup(String filePath, Datastore.BackupType backupType) throws
             IOException;
 
-    void restore(List<HttpResponseData> data);
+    void restore(String filename, Datastore.BackupType backupType) throws
+            IOException;
     enum BackupType {
         TXT,
         JSON,

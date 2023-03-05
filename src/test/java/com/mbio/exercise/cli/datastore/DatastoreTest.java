@@ -50,6 +50,7 @@ public class DatastoreTest {
         if(fileBackupTXT.exists()) {
             fileBackupTXT.delete();
         }
+
     }
     @Test
     @Order(1)
@@ -183,6 +184,75 @@ public class DatastoreTest {
         assert parsedRows.get(0).getUrl().equals("https://www.google.com");
         assert parsedRows.get(1).getUrl().equals("https://www.adadada.com");
         assert parsedRows.get(2).getUrl().equals("https://www.adadada.com");
+
+    }
+
+    @Test
+    @Order(6)
+    public void testRestore() throws IOException {
+        datastore.backup("./rest_backup.json", DatastoreImpl.BackupType.JSON);
+        datastore.backup("./rest_backup.csv", DatastoreImpl.BackupType.CSV);
+        datastore.backup("./rest_backup.txt", DatastoreImpl.BackupType.TXT);
+
+        datastore = new DatastoreImpl("./mbio_data_json");
+
+        datastore.restore("./rest_backup.json", DatastoreImpl.BackupType.JSON);
+
+        File fileDatastoreJson = new File("./mbio_data_json");
+
+        assert fileDatastoreJson.exists();
+
+        datastore.getAllHistory().forEach(result -> {
+            assert result.getUrl().equals("https://www.google.com") ||
+                    result.getUrl().equals("https://www.adadada.com");
+        });
+
+        FileTestUtils.deleteDirectory(fileDatastoreJson);
+
+        datastore = new DatastoreImpl("./mbio_data_csv");
+
+        datastore.restore("./rest_backup.csv", DatastoreImpl.BackupType.CSV);
+
+        File fileDatastoreCsv = new File("./mbio_data_csv");
+
+        assert fileDatastoreCsv.exists();
+
+        datastore.getAllHistory().forEach(result -> {
+            assert result.getUrl().equals("https://www.google.com") ||
+                    result.getUrl().equals("https://www.adadada.com");
+        });
+
+        FileTestUtils.deleteDirectory(fileDatastoreCsv);
+
+        datastore = new DatastoreImpl("./mbio_data_txt");
+
+        datastore.restore("./rest_backup.txt", DatastoreImpl.BackupType.TXT);
+
+        File fileDatastoreTxt = new File("./mbio_data_txt");
+
+        assert fileDatastoreTxt.exists();
+
+        datastore.getAllHistory().forEach(result -> {
+            assert result.getUrl().equals("https://www.google.com") ||
+                    result.getUrl().equals("https://www.adadada.com");
+        });
+
+        FileTestUtils.deleteDirectory(fileDatastoreTxt);
+
+        File json = new File("./rest_backup.json");
+        if(json.exists()) {
+            json.delete();
+        }
+
+        File txt = new File("./rest_backup.txt");
+        if(txt.exists()) {
+            txt.delete();
+        }
+
+        File csv = new File("./rest_backup.csv");
+        if(csv.exists()) {
+            csv.delete();
+        }
 
     }
 }
