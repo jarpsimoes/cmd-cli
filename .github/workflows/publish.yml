@@ -1,0 +1,43 @@
+name: Build and Package
+
+on:
+  workflow_run:
+    workflows: ["Unit test and coverage"]
+    branches: [main]
+    types: 
+      - completed
+  push:
+    branches: ["main"]
+    tags: "v*"
+    paths-ignore: 
+      - "*.md"
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3.1.0
+    - name: Setup Java JDK
+      uses: actions/setup-java@v3.10.0
+      with:
+        distribution: 'adopt-openj9'
+        java-version: '17'
+        cache: maven
+    - name: Package Application
+      run: ./mvnw package -DskipTests
+    - name: Docker Login
+      uses: docker/login-action@v2.1.0
+      with:
+        registry: ghcr.io
+        username: ${{ secrets.DOCKER_REGISTRY_GITHUB_USERNAME }}
+        password: ${{ secrets.DOCKER_REGISTRY_GITHUB_TOKEN }}
+    - name: Build Image
+      run: |
+        docker build . --file docker_dist/Dockerfile --tag ghcr.io/jarpsimoes/cmd-cli:latest
+    - name: Push Image
+      run: |
+        docker push ghcr.io/jarpsimoes/cmd-cli:latest
+    
