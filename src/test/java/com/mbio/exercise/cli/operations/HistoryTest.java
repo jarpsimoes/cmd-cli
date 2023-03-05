@@ -85,9 +85,7 @@ public class HistoryTest {
 
         assert result.exitCode() == 0;
 
-        result = launcher.launch("history", "--all", "-o", "output.txt");
-
-
+        result = launcher.launch("history", "--all", "-c", "-o",  "output.txt");
 
         assert result.exitCode() == 0;
 
@@ -105,6 +103,8 @@ public class HistoryTest {
         if(file.exists()) {
             file.delete();
         }
+
+
 
     }
 
